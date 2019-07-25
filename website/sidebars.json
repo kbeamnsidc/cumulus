@@ -62,7 +62,8 @@
     ],
     "Cumulus Development": [
       "adding-a-task",
-      "docs-how-to"
+      "docs-how-to",
+      "development/terraform-modules"
     ]
   },
   "Data Cookbooks": {
