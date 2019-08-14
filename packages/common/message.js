@@ -1,4 +1,5 @@
 const findKey = require('lodash.findkey');
+const cloneDeep = require('lodash.clonedeep');
 const get = require('lodash.get');
 const merge = require('lodash.merge');
 const uuidv4 = require('uuid/v4');
@@ -62,7 +63,7 @@ const buildMeta = ({
  * @returns {string} - An SQS queue name
  */
 const getQueueNameByUrl = (message, queueUrl) => {
-  const queues = get(message, 'meta.queues', {});
+  const queues = get(message, 'workflow_data.meta.queues', {});
   return findKey(queues, (value) => value === queueUrl);
 };
 
@@ -74,7 +75,7 @@ const getQueueNameByUrl = (message, queueUrl) => {
  * @returns {string} - A queue name
  */
 const getQueueName = (message) => {
-  const queueName = get(message, 'cumulus_meta.queueName');
+  const queueName = get(message, 'workflow_data.cumulus_meta.queueName');
   if (isNil(queueName)) {
     throw new Error('cumulus_meta.queueName not set in message');
   }
@@ -89,7 +90,7 @@ const getQueueName = (message) => {
  * @returns {number} - Count of the maximum executions for the queue
  */
 const getMaximumExecutions = (message, queueName) => {
-  const maxExecutions = get(message, `meta.queueExecutionLimits.${queueName}`);
+  const maxExecutions = get(message, `workflow_data.meta.queueExecutionLimits.${queueName}`);
   if (isNil(maxExecutions)) {
     throw new Error(`Could not determine maximum executions for queue ${queueName}`);
   }
@@ -145,10 +146,13 @@ function buildQueueMessageFromTemplate({
   parentExecutionArn,
   queueName,
   messageTemplate,
-  payload,
+  payload = {},
   customCumulusMeta = {},
   customMeta = {}
 }) {
+
+  const messageTemplateCopy = cloneDeep(messageTemplate);
+
   const cumulusMeta = buildCumulusMeta({
     parentExecutionArn,
     queueName
@@ -159,11 +163,15 @@ function buildQueueMessageFromTemplate({
     collection
   });
 
+  ['meta', 'cumulus_meta', 'payload'].forEach((e) => delete messageTemplateCopy[e]);
+
   const message = {
-    ...messageTemplate,
-    meta: merge(messageTemplate.meta, customMeta, meta),
-    cumulus_meta: merge(messageTemplate.cumulus_meta, customCumulusMeta, cumulusMeta),
-    payload
+    ...messageTemplateCopy,
+    workflow_data: {
+      meta: merge(messageTemplate.meta, customMeta, meta),
+      cumulus_meta: merge(messageTemplate.cumulus_meta, customCumulusMeta, cumulusMeta),
+      payload: merge(messageTemplate.payload, payload)
+    }
   };
 
   return message;

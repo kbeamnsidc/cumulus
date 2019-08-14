@@ -43,9 +43,11 @@ test('getQueueNameByUrl returns correct value', (t) => {
   const queueName = randomId('queueName');
   const queueUrl = randomId('queueUrl');
   const testMessage = {
-    meta: {
-      queues: {
-        [queueName]: queueUrl
+    workflow_data: {
+      meta: {
+        queues: {
+          [queueName]: queueUrl
+        }
       }
     }
   };
@@ -95,21 +97,23 @@ test('buildQueueMessageFromTemplate does not overwrite contents from message tem
 
   const expectedMessage = {
     foo: 'bar',
-    meta: {
-      provider,
-      collection,
-      workflows: {
-        workflow1: 'workflow1Template'
-      }
-    },
-    cumulus_meta: {
-      message_source: 'sfn',
-      execution_name: executionName,
-      queueName
-    },
-    payload
+    workflow_data: {
+      meta: {
+        provider,
+        collection,
+        workflows: {
+          workflow1: 'workflow1Template'
+        }
+      },
+      cumulus_meta: {
+        message_source: 'sfn',
+        execution_name: executionName,
+        queueName
+      },
+      payload
+    }
   };
-
+  // TODO - this test should validate that move to workflow_data also respects useful top level keys
   t.deepEqual(actualMessage, expectedMessage);
 });
 
@@ -136,17 +140,19 @@ test('buildQueueMessageFromTemplate returns message with correct payload', (t) =
   });
 
   const expectedMessage = {
-    meta: {
-      provider,
-      collection
-    },
-    cumulus_meta: {
-      execution_name: executionName,
-      queueName
-    },
-    payload: {
-      foo: 'bar',
-      granules
+    workflow_data: {
+      meta: {
+        provider,
+        collection
+      },
+      cumulus_meta: {
+        execution_name: executionName,
+        queueName
+      },
+      payload: {
+        foo: 'bar',
+        granules
+      }
     }
   };
 
@@ -179,15 +185,17 @@ test('buildQueueMessageFromTemplate returns expected message with undefined coll
   });
 
   const expectedMessage = {
-    meta: {
-      provider,
-      collection
-    },
-    cumulus_meta: {
-      execution_name: executionName,
-      queueName
-    },
-    payload
+    workflow_data: {
+      meta: {
+        provider,
+        collection
+      },
+      cumulus_meta:  {
+        execution_name: executionName,
+        queueName
+      },
+      payload
+    }
   };
 
   t.deepEqual(actualMessage, expectedMessage);
@@ -214,15 +222,17 @@ test('buildQueueMessageFromTemplate returns expected message with defined collec
   });
 
   const expectedMessage = {
-    meta: {
-      provider,
-      collection
-    },
-    cumulus_meta: {
-      execution_name: executionName,
-      queueName
-    },
-    payload
+    workflow_data: {
+      meta: {
+        provider,
+        collection
+      },
+      cumulus_meta: {
+        execution_name: executionName,
+        queueName
+      },
+      payload
+    }
   };
 
   t.deepEqual(actualMessage, expectedMessage);
@@ -262,23 +272,25 @@ test('buildQueueMessageFromTemplate returns expected message with custom cumulus
   });
 
   const expectedMessage = {
-    meta: {
-      provider,
-      collection,
-      foo: 'bar',
-      object: {
-        key: 'value'
-      }
-    },
-    cumulus_meta: {
-      execution_name: executionName,
-      queueName,
-      foo: 'bar',
-      object: {
-        key: 'value'
-      }
-    },
-    payload
+    workflow_data: {
+      meta: {
+        provider,
+        collection,
+        foo: 'bar',
+        object: {
+          key: 'value'
+        }
+      },
+      cumulus_meta: {
+        execution_name: executionName,
+        queueName,
+        foo: 'bar',
+        object: {
+          key: 'value'
+        }
+      },
+      payload
+    }
   };
 
   t.deepEqual(actualMessage, expectedMessage);

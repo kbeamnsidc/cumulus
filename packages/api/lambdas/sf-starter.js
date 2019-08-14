@@ -1,6 +1,7 @@
 'use strict';
 
 const uuidv4 = require('uuid/v4');
+const clonedeep = require('lodash.clonedeep');
 const get = require('lodash.get');
 
 const { sfn } = require('@cumulus/common/aws');
@@ -22,18 +23,17 @@ const {
  * @returns {Promise} - AWS SF Start Execution response
  */
 function dispatch(message) {
-  const input = Object.assign({}, message.Body);
+  const input = clonedeep(message.Body);
+  input.workflow_data.cumulus_meta.workflow_start_time = Date.now();
 
-  input.cumulus_meta.workflow_start_time = Date.now();
-
-  if (!input.cumulus_meta.execution_name) {
-    input.cumulus_meta.execution_name = uuidv4();
+  if (!input.workflow_data.cumulus_meta.execution_name) {
+    input.workflow_data.cumulus_meta.execution_name = uuidv4();
   }
 
   return sfn().startExecution({
-    stateMachineArn: message.Body.cumulus_meta.state_machine,
+    stateMachineArn: message.Body.workflow_data.cumulus_meta.state_machine,
     input: JSON.stringify(input),
-    name: input.cumulus_meta.execution_name
+    name: input.workflow_data.cumulus_meta.execution_name
   }).promise();
 }
 

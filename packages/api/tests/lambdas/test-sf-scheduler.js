@@ -122,10 +122,10 @@ test.serial('Sends a message to SQS with a custom queue name if queueName is def
 
   const [targetQueueUrl, targetMessage] = sqsStub.getCall(0).args;
   t.is(targetQueueUrl, fakeMessageResponse.meta.queues[customQueueName]);
-  t.is(targetMessage.cumulus_meta.queueName, customQueueName);
-  t.is(targetMessage.meta.queueExecutionLimits[customQueueName], 5);
-  t.deepEqual(targetMessage.meta.collection, fakeCollection);
-  t.deepEqual(targetMessage.meta.provider, fakeProvider);
+  t.is(targetMessage.workflow_data.cumulus_meta.queueName, customQueueName);
+  t.is(targetMessage.workflow_data.meta.queueExecutionLimits[customQueueName], 5);
+  t.deepEqual(targetMessage.workflow_data.meta.collection, fakeCollection);
+  t.deepEqual(targetMessage.workflow_data.meta.provider, fakeProvider);
 });
 
 test.serial('Sends a message to SQS with the startSF queue if queueName is not defined', async (t) => {
@@ -144,8 +144,8 @@ test.serial('Sends a message to SQS with the startSF queue if queueName is not d
 
   const [targetQueueUrl, targetMessage] = sqsStub.getCall(0).args;
   t.is(targetQueueUrl, fakeMessageResponse.meta.queues[defaultQueueName]);
-  t.is(targetMessage.cumulus_meta.queueName, defaultQueueName);
-  t.is(targetMessage.meta.queueExecutionLimits[customQueueName], 5);
-  t.deepEqual(targetMessage.meta.collection, fakeCollection);
-  t.deepEqual(targetMessage.meta.provider, fakeProvider);
+  t.is(targetMessage.workflow_data.cumulus_meta.queueName, defaultQueueName);
+  t.is(targetMessage.workflow_data.meta.queueExecutionLimits[customQueueName], 5);
+  t.deepEqual(targetMessage.workflow_data.meta.collection, fakeCollection);
+  t.deepEqual(targetMessage.workflow_data.meta.provider, fakeProvider);
 });
