@@ -14,6 +14,7 @@ const {
 
 const EarthdataLogin = require('../lib/EarthdataLogin');
 const GoogleOAuth2 = require('../lib/GoogleOAuth2');
+const LaunchpadLogin = require('../lib/LaunchpadLogin');
 const {
   createJwtToken
 } = require('../lib/token');
@@ -229,10 +230,21 @@ function buildEarthdataLoginProviderFromEnv() {
   });
 }
 
+function buildLaunchpadLoginProviderFromEnv() {
+  return LaunchpadLogin.createFromEnv({
+    redirectUri: process.env.TOKEN_REDIRECT_ENDPOINT
+  });
+}
+
+
 function buildOAuth2ProviderFromEnv() {
-  return process.env.OAUTH_PROVIDER === 'google'
-    ? buildGoogleOAuth2ProviderFromEnv()
-    : buildEarthdataLoginProviderFromEnv();
+  const mapping = {
+    earthdata: () => buildEarthdataLoginProviderFromEnv(),
+    google: () => buildGoogleOAuth2ProviderFromEnv(),
+    launchpad: () => buildLaunchpadLoginProviderFromEnv()
+  };
+
+  return mapping[process.env.OAUTH_PROVIDER || 'earthdata'];
 }
 
 /**

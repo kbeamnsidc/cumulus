@@ -33,9 +33,14 @@ if (process.env.FAKE_AUTH === 'true') {
   ensureAuthorized = token.ensureAuthorized;
 }
 
-if (process.env.OAUTH_PROVIDER === 'launchpad') {
-  ensureAuthorized = launchpadAuth.ensureAuthorized;
-}
+// TBD for launchpad authentication, need to find a way to work for:
+// 1. launchpad token from token service
+// 2. browse Launchpad login via SAML
+
+// This works for token provided from Launchpad token service
+//if (process.env.OAUTH_PROVIDER === 'launchpad') {
+//  ensureAuthorized = launchpadAuth.ensureAuthorized;
+//}
 
 // collections endpoints
 router.use('/collections', ensureAuthorized, collections);
