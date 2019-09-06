@@ -71,10 +71,16 @@ async function bootstrapElasticSearch(host, index = 'cumulus', alias = defaultIn
     return;
   }
 
+  console.log(`host: ${host}`);
+
   const esClient = await Search.es(host);
+
+  console.log('initiated search');
 
   // check if the index exists
   const exists = await esClient.indices.exists({ index });
+
+  log.info(`index ${index} exists ${exists}`);
 
   if (!exists) {
     // add mapping
@@ -280,7 +286,11 @@ function handler(event, context, cb) {
   }
 
   const actions = [
-    bootstrapElasticSearch(get(es, 'host')),
+    bootstrapElasticSearch(get(es, 'host'))
+      .catch((err) => {
+        console.log('Failure bootstrapping ES');
+        throw err;
+      }),
     bootstrapUsers(get(users, 'table'), get(users, 'records')),
     bootstrapCmrProvider(get(cmr, 'Password')),
     bootstrapLaunchpad(get(launchpad, 'Passphrase')),

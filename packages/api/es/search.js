@@ -64,6 +64,8 @@ const esConfig = (host) => (inTestMode() ? esTestConfig() : esProdConfig(host));
 
 class BaseSearch {
   static async es(host) {
+    const config = await esConfig(host);
+    console.log('ES Config: '  + JSON.stringify(config, null, 2));
     return new elasticsearch.Client(await esConfig(host));
   }
 
