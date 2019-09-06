@@ -114,7 +114,7 @@ if [[ $bamboo_NGAP_ENV = "SIT" ]]; then
   export VPC_CIDR_IP=$bamboo_SECRET_SIT_VPC_CIDR_IP
   export PROVIDER_HOST=$bamboo_SECRET_SIT_PROVIDER_HOST
   export SECURITY_GROUP=$bamboo_SECRET_SIT_SECURITY_GROUP
-  DEPLOYMENT=$bamboo_SIT_DEPLOYMENT
+  # DEPLOYMENT=$bamboo_SIT_DEPLOYMENT
 fi
 
 ## Set integration stack name if it's not been overridden *or* set by SIT

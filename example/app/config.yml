@@ -452,6 +452,27 @@ lf-sit:
       name: lf-sit-protected
       type: protected
 
+lf-sit-test:
+  prefix: lf-sit-test
+  prefixNoDash: lfSitTest
+
+  buckets:
+    internal:
+      name: lf-sit-internal
+      type: internal
+    private:
+      name: lf-sit-private
+      type: private
+    protected:
+      name: lf-sit-protected
+      type: protected
+    public:
+      name: lf-sit-public
+      type: public
+    protected-2:
+      name: lf-sit-protected
+      type: protected
+
 kk:
   prefix: kk-test
   prefixNoDash: KkTest
