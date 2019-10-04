@@ -132,8 +132,11 @@ class StateMachineS3MessageSource extends MessageSource {
       if (!message.payload || !message.payload.Bucket || !message.payload.Key) {
         return message;
       }
-      const payloadJson = await aws.s3().getObject(message.payload).promise();
-      return Object.assign({}, message, { payload: JSON.parse(payloadJson.Body) });
+
+      return {
+        ...message,
+        payload: await aws.getJsonFromS3(message.payload.Bucket, message.payload.Key)
+      };
     } catch (e) {
       log.info('Exception in loadMessageData');
       throw e;

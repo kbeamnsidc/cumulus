@@ -6,12 +6,7 @@ const uuidv4 = require('uuid/v4');
 
 const { constructCollectionId } = require('./collection-config-store');
 const { isNil } = require('./util');
-const { getExecutionArn } = require('./aws');
-
-const {
-  getS3Object,
-  parseS3Uri
-} = require('./aws');
+const { getExecutionArn, getJsonFromS3, parseS3Uri } = require('./aws');
 
 const createExecutionName = () => uuidv4();
 
@@ -237,10 +232,8 @@ const hasQueueAndExecutionLimit = (message) => {
  * @returns {Promise} message object
  **/
 async function getMessageFromTemplate(templateUri) {
-  const parsedS3Uri = parseS3Uri(templateUri);
-  const data = await getS3Object(parsedS3Uri.Bucket, parsedS3Uri.Key);
-  // TODO Fix this
-  return JSON.parse(data.Body);
+  const { Bucket, Key } = parseS3Uri(templateUri);
+  return getJsonFromS3(Bucket, Key);
 }
 
 module.exports = {
