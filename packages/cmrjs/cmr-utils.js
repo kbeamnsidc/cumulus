@@ -273,8 +273,7 @@ async function parseXmlString(xml) {
  */
 async function metadataObjectFromCMRJSONFile(cmrFilename) {
   const { Bucket, Key } = aws.parseS3Uri(cmrFilename);
-  const obj = await aws.getS3Object(Bucket, Key);
-  return JSON.parse(obj.Body.toString());
+  return aws.getJsonFromS3(Bucket, Key);
 }
 
 /**

@@ -6,6 +6,7 @@ const test = require('ava');
 const {
   aws: {
     ecs,
+    getJsonFromS3,
     recursivelyDeleteS3Bucket,
     s3
   },
@@ -112,12 +113,12 @@ test.serial('The AsyncOperation.start() method uploads the payload to S3', async
     payload
   });
 
-  const getObjectResponse = await s3().getObject({
-    Bucket: systemBucket,
-    Key: `${asyncOperationModel.stackName}/async-operation-payloads/${id}.json`
-  }).promise();
+  const fetchedJson = await getJsonFromS3(
+    systemBucket,
+    `${asyncOperationModel.stackName}/async-operation-payloads/${id}.json`
+  );
 
-  t.deepEqual(JSON.parse(getObjectResponse.Body.toString()), payload);
+  t.deepEqual(fetchedJson, payload);
 });
 
 test.serial('The AsyncOperation.start() method starts an ECS task with the correct parameters', async (t) => {

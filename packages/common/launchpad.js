@@ -2,7 +2,7 @@
 
 const path = require('path');
 const pick = require('lodash.pick');
-const { getS3Object, s3ObjectExists, s3PutObject } = require('./aws');
+const { getJsonFromS3, s3ObjectExists, s3PutObject } = require('./aws');
 const LaunchpadToken = require('./LaunchpadToken');
 const log = require('./log');
 
@@ -33,8 +33,7 @@ async function getValidLaunchpadTokenFromS3() {
 
   let token = null;
   if (keyExists) {
-    const s3object = await getS3Object(s3location.Bucket, s3location.Key);
-    const launchpadToken = JSON.parse(s3object.Body.toString());
+    const launchpadToken = await getJsonFromS3(s3location.Bucket, s3location.Key);
 
     // check if token is still valid
     if (Date.now() / 1000 < launchpadToken.session_maxtimeout + launchpadToken.session_starttime) {

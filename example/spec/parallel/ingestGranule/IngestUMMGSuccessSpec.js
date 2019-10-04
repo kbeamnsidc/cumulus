@@ -16,7 +16,7 @@ const {
 const { generateChecksumFromStream } = require('@cumulus/checksum');
 const {
   aws: {
-    getS3Object,
+    getJsonFromS3,
     s3ObjectExists,
     parseS3Uri,
     headObject
@@ -76,11 +76,10 @@ const s3data = [
   '@cumulus/test-data/granules/MOD09GQ.A2016358.h13v04.006.2016360104606_ndvi.jpg'
 ];
 
-async function getUmmObject(fileLocation) {
+function getUmmObject(fileLocation) {
   const { Bucket, Key } = parseS3Uri(fileLocation);
 
-  const ummFile = await getS3Object(Bucket, Key);
-  return JSON.parse(ummFile.Body.toString());
+  return getJsonFromS3(Bucket, Key);
 }
 
 const cumulusDocUrl = 'https://nasa.github.io/cumulus/docs/cumulus-docs-readme';

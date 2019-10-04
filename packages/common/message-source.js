@@ -112,22 +112,17 @@ class StateMachineS3MessageSource extends MessageSource {
   }
 
   async loadState(taskName) {
-    if (!this.key) {
-      return null;
-    }
-    try {
-      const s3Config = {
-        Bucket: this.bucket,
-        Key: [`${taskName}-state`, this.key].join('/')
-      };
-      const data = await aws.s3().getObject(s3Config).promise();
+    if (!this.key) return null;
 
-      return JSON.parse(data.Body.toString());
+    try {
+      return await aws.getJsonFromS3(
+        this.bucket,
+        `${taskName}-state/${this.key}`
+      );
     } catch (e) {
-      if (e.code !== 'NoSuchKey') {
-        throw e;
-      }
+      if (e.code !== 'NoSuchKey') throw e;
     }
+
     return null;
   }
 

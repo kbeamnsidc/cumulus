@@ -239,6 +239,7 @@ const hasQueueAndExecutionLimit = (message) => {
 async function getMessageFromTemplate(templateUri) {
   const parsedS3Uri = parseS3Uri(templateUri);
   const data = await getS3Object(parsedS3Uri.Bucket, parsedS3Uri.Key);
+  // TODO Fix this
   return JSON.parse(data.Body);
 }
 

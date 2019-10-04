@@ -7,6 +7,7 @@ const {
     buildS3Uri,
     deleteS3Files,
     dynamodb,
+    getJsonFromS3,
     lambda,
     s3
   },
@@ -246,11 +247,7 @@ describe('When there are granule differences and granule reconciliation is run',
 
     // Fetch the report
     const reportKey = (await getReportsKeys(config.bucket, config.stackName))[0];
-    report = await s3().getObject({
-      Bucket: config.bucket,
-      Key: reportKey
-    }).promise()
-      .then((response) => JSON.parse(response.Body.toString()));
+    report = await getJsonFromS3(config.bucket, reportKey);
 
     console.log(`update granule files back ${publishedGranuleId}`);
     await granuleModel.update({ granuleId: publishedGranuleId }, { files: JSON.parse(granuleResponse.body).files });

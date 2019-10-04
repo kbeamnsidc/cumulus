@@ -2,7 +2,7 @@
 
 const router = require('express-promise-router')();
 const path = require('path');
-const { aws } = require('@cumulus/common');
+const { aws } = require('@cumulus/common/aws');
 const { invoke } = require('@cumulus/ingest/aws');
 
 /**
@@ -42,8 +42,7 @@ async function get(req, res) {
   const key = `${process.env.stackName}/reconciliation-reports/${name}`;
 
   try {
-    const file = await aws.getS3Object(process.env.system_bucket, key);
-    return res.send(JSON.parse(file.Body.toString()));
+    return await aws.getJsonFromS3(process.env.system_bucket, key);
   } catch (err) {
     if (err.name === 'NoSuchKey') {
       return res.boom.notFound('The report does not exist!');

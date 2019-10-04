@@ -367,6 +367,10 @@ exports.getS3ObjectReadStream = (bucket, key) => exports.s3().getObject(
   { Bucket: bucket, Key: key }
 ).createReadStream();
 
+exports.getJsonFromS3 = (bucket, key) =>
+  exports.getS3Object(bucket, key)
+    .then(({ Body }) => JSON.parse(Body.toString()));
+
 /**
 * Check if a file exists in an S3 object
 *
@@ -974,8 +978,7 @@ exports.pullStepFunctionEvent = async (incomingEvent) => {
     return incomingEvent;
   }
   const event = cloneDeep(incomingEvent);
-  const remoteMsgS3Object = await exports.getS3Object(event.replace.Bucket, event.replace.Key);
-  const remoteMsg = JSON.parse(remoteMsgS3Object.Body.toString());
+  const remoteMsg = await exports.getJsonFromS3(event.replace.Bucket, event.replace.Key);
 
   let returnEvent = remoteMsg;
   if (event.replace.TargetPath) {

@@ -1,7 +1,12 @@
 'use strict';
 
 const test = require('ava');
-const { recursivelyDeleteS3Bucket, s3, s3ObjectExists } = require('../aws');
+const {
+  getJsonFromS3,
+  recursivelyDeleteS3Bucket,
+  s3,
+  s3ObjectExists
+} = require('../aws');
 const { randomString } = require('../test-utils');
 const {
   CollectionConfigStore,
@@ -121,12 +126,11 @@ test.serial('put() stores a collection config to S3', async (t) => {
   const collectionConfigStore = new CollectionConfigStore(bucket, stackName);
   await collectionConfigStore.put(dataType, dataVersion, collectionConfig);
 
-  const getObjectResponse = await s3().getObject({
-    Bucket: bucket,
-    Key: collectionConfigKey(dataType, dataVersion)
-  }).promise();
+  const storedCollectionConfig = await getJsonFromS3(
+    bucket,
+    collectionConfigKey(dataType, dataVersion)
+  );
 
-  const storedCollectionConfig = JSON.parse(getObjectResponse.Body.toString());
   t.deepEqual(storedCollectionConfig, collectionConfig);
 });
 

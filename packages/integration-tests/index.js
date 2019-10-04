@@ -19,7 +19,7 @@ const {
 const {
   dynamodb,
   ecs,
-  s3,
+  getJsonFromS3,
   sfn
 } = require('@cumulus/common/aws');
 const StepFunctions = require('@cumulus/common/StepFunctions');
@@ -110,11 +110,8 @@ async function getClusterArn(stackName) {
  * @param {string} workflowName - workflow name
  * @returns {Promise.<Object>} template as a JSON object
  */
-function getWorkflowTemplate(stackName, bucketName, workflowName) {
-  const key = `${stackName}/workflows/${workflowName}.json`;
-  return s3().getObject({ Bucket: bucketName, Key: key }).promise()
-    .then((templateJson) => JSON.parse(templateJson.Body.toString()));
-}
+const getWorkflowTemplate = (stackName, bucketName, workflowName) =>
+  getJsonFromS3(bucketName, `${stackName}/workflows/${workflowName}.json`);
 
 /**
  * Get the workflow ARN for the given workflow from the
