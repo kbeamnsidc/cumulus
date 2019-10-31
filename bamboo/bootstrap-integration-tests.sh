@@ -14,7 +14,13 @@ npm config set unsafe-perm true
 npm install
 . ./bamboo/set-bamboo-env-variables.sh
 
-
+if [[ $USE_NPM_PACKAGES == true ]]; then
+  echo "***Deploying stack with NPM packages"
+  (cd example && npm install)
+else
+  echo "***Deploying stack with built packages"
+  npm run bootstrap
+fi
 
 echo "Locking stack for deployment $DEPLOYMENT"
 
