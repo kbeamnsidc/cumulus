@@ -3,6 +3,8 @@ set -ex
 
 . ./bamboo/abort-if-not-pr.sh
 . ./bamboo/set-bamboo-env-variables.sh
+. ./bamboo/abort-tests-if-no-code-change.sh
+
 
 # Export user information for sshd container
 export SSH_USERS=user:$(id -u):$(id -u)

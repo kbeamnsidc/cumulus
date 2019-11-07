@@ -2,6 +2,8 @@
 set -ex
 . ./bamboo/abort-if-not-pr.sh
 . ./bamboo/set-bamboo-env-variables.sh
+. ./bamboo/abort-tests-if-no-code-change.sh
+
 docker ps -a ## Show running containers for output logs
 
 # Run unit tests (excluding integration/api tests)

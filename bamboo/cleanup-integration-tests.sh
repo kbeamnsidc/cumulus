@@ -5,6 +5,8 @@ set -ex
 
 npm install
 . ./bamboo/set-bamboo-env-variables.sh
+. ./bamboo/abort-tests-if-no-code-change.sh
+
 set +e
 (
   set -e

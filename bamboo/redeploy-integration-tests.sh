@@ -9,5 +9,6 @@ if [[ $RUN_REDEPLOYMENT != true ]]; then
 fi
 
 . ./bamboo/set-bamboo-env-variables.sh
+. ./bamboo/abort-tests-if-no-code-change.sh
 
 (cd example && npm run redeploy-test)
