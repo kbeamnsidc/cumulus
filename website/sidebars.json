@@ -2,6 +2,7 @@
   "docs": {
     "About Cumulus": [
       "cumulus-docs-readme",
+      "getting-started",
       "architecture",
       "interfaces",
       "glossary",
