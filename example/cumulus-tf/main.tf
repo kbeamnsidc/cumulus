@@ -27,6 +27,7 @@ module "cumulus" {
   cumulus_message_adapter_lambda_layer_arn = var.cumulus_message_adapter_lambda_layer_arn
 
   prefix = var.prefix
+  region = var.region
 
   vpc_id            = var.vpc_id
   lambda_subnet_ids = var.subnet_ids
@@ -106,4 +107,3 @@ resource "aws_lambda_permission" "sns_s3_test" {
   principal     = "sns.amazonaws.com"
   source_arn    = module.cumulus.sftracker_sns_topic_arn
 }
-

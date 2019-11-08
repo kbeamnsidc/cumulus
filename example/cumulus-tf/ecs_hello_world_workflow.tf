@@ -44,6 +44,23 @@ module "hello_world_service" {
   }
 }
 
+resource "aws_cloudwatch_metric_alarm" "ecs_hello_world_task_count_high" {
+  alarm_description   = "There are more tasks running than the desired"
+  alarm_name          = "${var.prefix}-EcsTaskHelloWorld-TaskCountHighAlarm"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = 1
+  metric_name         = "MemoryUtilization"
+  statistic           = "SampleCount"
+  threshold           = 1
+  period              = 60
+  namespace           = "AWS/ECS"
+  dimensions = {
+    ClusterName = module.cumulus.ecs_cluster_name
+    ServiceName = module.hello_world_service.service_name
+  }
+  tags = local.default_tags
+}
+
 module "ecs_hello_world_workflow" {
   source = "../../tf-modules/workflow"
 
@@ -53,6 +70,7 @@ module "ecs_hello_world_workflow" {
   state_machine_role_arn                = module.cumulus.step_role_arn
   sf_semaphore_down_lambda_function_arn = module.cumulus.sf_semaphore_down_lambda_function_arn
   sftracker_sns_topic_arn               = module.cumulus.sftracker_sns_topic_arn
+  system_bucket                         = var.system_bucket
   tags                                  = local.default_tags
 
   workflow_config = <<JSON
